@@ -36,7 +36,7 @@ public class Personnage {
     }
     
     
-    public ArrayList<Personnage> findAll() throws ClassNotFoundException, SQLException
+    public static ArrayList<Personnage> findAll() throws ClassNotFoundException, SQLException
     {
         ArrayList<Personnage> personnages = new ArrayList();
         
@@ -51,6 +51,10 @@ public class Personnage {
         {
             int id = -1;
             String name = "Not found";
+            String race = null;
+            String description = null;
+            Blob picture = null;
+            int level;
             
             id = resultSet.getInt("Id");
             name = resultSet.getString("Name");
