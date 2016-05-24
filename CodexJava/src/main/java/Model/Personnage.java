@@ -6,6 +6,12 @@
 package Model;
 
 import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -16,19 +22,48 @@ public class Personnage {
     private int id;
     private String name;
     private String race;
-    private String decription;
+    private String description;
     private Blob picture;
     private int level;
 
-    public Personnage(int id, String name, String race, String decription, Blob picture, int level) {
+    public Personnage(int id, String name, String race, String description, Blob picture, int level) {
         this.id = id;
         this.name = name;
         this.race = race;
-        this.decription = decription;
+        this.description = description;
         this.picture = picture;
         this.level = level;
     }
     
+    
+    public ArrayList<Personnage> findAll() throws ClassNotFoundException, SQLException
+    {
+        ArrayList<Personnage> personnages = new ArrayList();
+        
+        Class.forName("org.sqlite.JDBC");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\codexRDA.sqlite");
+        
+        Statement statement = connection.createStatement();
+        
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM personnnages ORDER BY name;");
+        
+        while(resultSet.next())
+        {
+            int id = -1;
+            String name = "Not found";
+            
+            id = resultSet.getInt("Id");
+            name = resultSet.getString("Name");
+            race = resultSet.getString("Race");
+            description = resultSet.getString("Description");
+            picture = resultSet.getBlob("Picture");
+            level = resultSet.getInt("Level");
+            
+            personnages.add(new Personnage(id, name, race, description, picture, level));
+        }
+        
+        return personnages;
+    }
     
     
 
@@ -56,12 +91,12 @@ public class Personnage {
         this.race = race;
     }
 
-    public String getDecription() {
-        return decription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDecription(String decription) {
-        this.decription = decription;
+    public void setDescription(String decription) {
+        this.description = decription;
     }
 
     public Blob getPicture() {
