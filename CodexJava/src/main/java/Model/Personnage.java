@@ -54,7 +54,7 @@ public class Personnage {
             String race = null;
             String description = null;
             Blob picture = null;
-            int level;
+            int level = -1;
             
             id = resultSet.getInt("Id");
             name = resultSet.getString("Name");
@@ -66,8 +66,29 @@ public class Personnage {
             personnages.add(new Personnage(id, name, race, description, picture, level));
         }
         
+        resultSet.close();
+        statement.close();
+        connection.close();
+        
         return personnages;
     }
+    
+    
+    public static void changeName(int id, String name) throws ClassNotFoundException, SQLException
+    {
+        
+        Class.forName("org.sqlite.JDBC");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\codexRDA.sqlite");
+        Statement statement = connection.createStatement();
+        
+        statement.executeUpdate("UPDATE personnages SET name = " + name +" WHERE Id = "+ id +";");
+        
+        
+        statement.close();
+        connection.close();
+    }
+    
+    
     
     
 
@@ -117,6 +138,11 @@ public class Personnage {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    @Override
+    public String toString() {
+        return name + ", level=" + level;
     }
     
     

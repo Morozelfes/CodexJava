@@ -6,6 +6,12 @@
 
 package Views;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
 /**
  *
  * @author fayoller
@@ -56,11 +62,6 @@ public class RefletdAcide extends javax.swing.JFrame {
 
         jLabel1.setText("Description");
 
-        listePersonnages.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane1.setViewportView(listePersonnages);
 
         jLabel2.setText("Sélectionnez un champ pour le consulter");
@@ -234,4 +235,71 @@ public class RefletdAcide extends javax.swing.JFrame {
     private javax.swing.JTextField textName;
     private javax.swing.JTextField textRace;
     // End of variables declaration//GEN-END:variables
+
+    public JButton getChangeImage() {
+        return changeImage;
+    }
+
+    public JButton getDelete() {
+        return delete;
+    }
+
+    public JLabel getjLabel1() {
+        return jLabel1;
+    }
+
+    public JLabel getjLabel2() {
+        return jLabel2;
+    }
+
+    public JLabel getjLabel3() {
+        return jLabel3;
+    }
+
+    public JLabel getjLabel4() {
+        return jLabel4;
+    }
+
+    public JLabel getjLabel5() {
+        return jLabel5;
+    }
+
+    public JScrollPane getjScrollPane1() {
+        return jScrollPane1;
+    }
+
+    public JLabel getLabelImage() {
+        return labelImage;
+    }
+
+    public JList getListePersonnages() {
+        return listePersonnages;
+    }
+
+    public JButton getNewEntry() {
+        return newEntry;
+    }
+
+    public JButton getSaveChange() {
+        return saveChange;
+    }
+
+    public JTextField getTextDescription() {
+        return textDescription;
+    }
+
+    public JTextField getTextLevel() {
+        return textLevel;
+    }
+
+    public JTextField getTextName() {
+        return textName;
+    }
+
+    public JTextField getTextRace() {
+        return textRace;
+    }
+
+
+
 }
