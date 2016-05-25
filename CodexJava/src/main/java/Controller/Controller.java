@@ -7,6 +7,7 @@ package Controller;
 
 import Model.Personnage;
 import Views.RDAView;
+import Views.addPersoFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -23,19 +24,22 @@ import javax.swing.event.ListSelectionListener;
 public class Controller {
     
     private ListSelectionListener displayedPerso;
-    private ActionListener al;
-    RDAView fenetre;
+    private ActionListener changeButtonListener, addButtonListener,cancelAddListener, confirmAddListener;
     
+    
+    private addPersoFrame addPerso;
+    RDAView mainFrame;
+    
+    ArrayList<Personnage> characters;
+    Personnage[] arrayCharacters;
     private Personnage selected;
     
     
     public Controller() throws ClassNotFoundException, SQLException, IOException
     {
-        fenetre = new RDAView();       
-        ArrayList<Personnage> liste = Personnage.findAll();
-        Personnage[] arrayPerso = new Personnage[liste.size()];
-        
-        arrayPerso = liste.toArray(arrayPerso);
+        mainFrame = new RDAView();       
+
+        refreshList();
         
         displayedPerso = new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent lse) {
@@ -45,7 +49,7 @@ public class Controller {
         };
         
         
-        al = new ActionListener() {
+        changeButtonListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 try {
                     updatePerso();
@@ -56,21 +60,27 @@ public class Controller {
                 }
             }
         };
+        
+        addButtonListener = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                openAddForm();
+            }
+        };
     
         
-        fenetre.getListePersonnages().addListSelectionListener(displayedPerso);
-        fenetre.getSaveChange().addActionListener(al);
+        mainFrame.getListePersonnages().addListSelectionListener(displayedPerso);
+        mainFrame.getSaveChange().addActionListener(changeButtonListener);
+        mainFrame.getNewEntry().addActionListener(addButtonListener);
         
         
-        fenetre.getListePersonnages().setListData(arrayPerso);
-        fenetre.getListePersonnages().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fenetre.getListePersonnages().setLayoutOrientation(JList.VERTICAL);
+        mainFrame.getListePersonnages().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        mainFrame.getListePersonnages().setLayoutOrientation(JList.VERTICAL);
         
-        fenetre.getListePersonnages().setVisibleRowCount(10);
-        fenetre.getListePersonnages().setVisible(true);
+        mainFrame.getListePersonnages().setVisibleRowCount(10);
+        mainFrame.getListePersonnages().setVisible(true);
         
         
-        fenetre.setVisible(true);
+        mainFrame.setVisible(true);
 
 
     }
@@ -78,24 +88,67 @@ public class Controller {
     
     public void updatePerso() throws ClassNotFoundException, SQLException
     {
-        selected.setChanges(selected.getId(), fenetre.getTextName().getText(), fenetre.getTextRace().getText(), Integer.parseInt(fenetre.getTextLevel().getText()), fenetre.getTextDescription().getText());
+        selected.setChanges(selected.getId(), mainFrame.getTextName().getText(), mainFrame.getTextRace().getText(), Integer.parseInt(mainFrame.getTextLevel().getText()), mainFrame.getTextDescription().getText());
         Personnage.updatePerso(selected);
     }
     
+    
     public void persoSelection()
     {
-        selected = fenetre.getListePersonnages().getSelectedValue();
+        selected = mainFrame.getListePersonnages().getSelectedValue();
         
-        fenetre.getTextName().setText(selected.getName());
-        fenetre.getTextRace().setText(selected.getRace());
-        fenetre.getTextLevel().setText(Integer.toString(selected.getLevel()));
-        fenetre.getTextDescription().setText(selected.getDescription());
+        mainFrame.getTextName().setText(selected.getName());
+        mainFrame.getTextRace().setText(selected.getRace());
+        mainFrame.getTextLevel().setText(Integer.toString(selected.getLevel()));
+        mainFrame.getTextDescription().setText(selected.getDescription());
         
-        fenetre.getImagePanel().setImage(selected.getPicture());
+        mainFrame.getImagePanel().setImage(selected.getPicture());
         
     }
     
     
+    public void openAddForm()
+    {
+        addPerso = new addPersoFrame();
+        
+        confirmAddListener = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    confirmAddCharacter();
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        
+        cancelAddListener = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                addPerso.setVisible(false);
+            }
+        };
+        
+        addPerso.getConfirmButton().addActionListener(addButtonListener);
+        addPerso.getCancelButton().addActionListener(cancelAddListener);
+        
+        addPerso.setVisible(true);
+    }
     
+    
+    public void confirmAddCharacter() throws IOException
+    {
+        Personnage newCharacter = new Personnage(characters.size()+1, addPerso.getNameField().getText(), addPerso.getRaceField().getText(), addPerso.getDescriptionField().getText(), Integer.parseInt(addPerso.getLevelField().getText()),null);
+        characters.add(newCharacter);
+        
+        Personnage.addCharacter(newCharacter);
+    }
+    
+    public void refreshList() throws ClassNotFoundException, SQLException, IOException
+    {
+        characters = Personnage.findAll();
+        arrayCharacters = new Personnage[characters.size()];
+        arrayCharacters = characters.toArray(arrayCharacters);
+        mainFrame.getListePersonnages().setListData(arrayCharacters);
+    }
+
     
 }

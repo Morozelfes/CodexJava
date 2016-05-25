@@ -48,9 +48,7 @@ public class Personnage {
     {
         ArrayList<Personnage> personnages = new ArrayList();
    
-        
-        Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
+        Connection connection = RDADatabase.getInstance().getConnection();
         
         Statement statement = connection.createStatement();
         
@@ -82,26 +80,11 @@ public class Personnage {
         return personnages;
     }
     
-    /*
-    public static void changeName(int id, String name) throws ClassNotFoundException, SQLException
-    {
-        
-        Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
-        Statement statement = connection.createStatement();
-        
-        statement.executeUpdate("UPDATE personnages SET Name = " + name +" WHERE Id = "+ id +";");
-        
-        
-        statement.close();
-        connection.close();
-    }
-    */
+    
     
     public static void updatePerso(Personnage p) throws ClassNotFoundException, SQLException
     {
-        Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
+        Connection connection = RDADatabase.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE personnages SET Name = ?, Race = ?, Lvl = ?, Description = ? WHERE Id = ?");
         
         statement.setString(1, p.name);
@@ -124,6 +107,23 @@ public class Personnage {
         setRace(race);
         setLevel(level);
         setDescription(description);
+    }
+    
+    //A MODIFIER
+    public static void addCharacter(Personnage p) throws SQLException, ClassNotFoundException
+    {
+        
+        Connection connection = RDADatabase.getInstance().getConnection();
+        
+        PreparedStatement statement = connection.prepareStatement("INSERT INTO personnages VALUES ?, ?, ?, ?, ?");
+        statement.setInt(1, p.id);
+        statement.setString(2, p.name);
+        statement.setString(3, p.race);
+        statement.setInt(4, p.level);
+        statement.setString(5, p.description);
+        
+        statement.executeUpdate();
+        
     }
     
 

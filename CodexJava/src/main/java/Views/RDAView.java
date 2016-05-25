@@ -26,6 +26,7 @@ public class RDAView extends javax.swing.JFrame {
      */
     public RDAView() {
         initComponents();
+        this.setTitle("Reflets d'Acide Codex");
     }
 
     /**
@@ -75,7 +76,7 @@ public class RDAView extends javax.swing.JFrame {
 
         textLevel.setText("jTextField2");
 
-        saveChange.setText("Sauvegarder les changement");
+        saveChange.setText("Sauvegarder les changements");
 
         delete.setText("Supprimer");
 
