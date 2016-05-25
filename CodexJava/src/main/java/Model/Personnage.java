@@ -73,23 +73,43 @@ public class Personnage {
         return personnages;
     }
     
-    
+    /*
     public static void changeName(int id, String name) throws ClassNotFoundException, SQLException
     {
         
         Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
         Statement statement = connection.createStatement();
         
-        statement.executeUpdate("UPDATE personnages SET name = " + name +" WHERE Id = "+ id +";");
+        statement.executeUpdate("UPDATE personnages SET Name = " + name +" WHERE Id = "+ id +";");
         
+        
+        statement.close();
+        connection.close();
+    }
+    */
+    
+    public static void updatePerso(Personnage p) throws ClassNotFoundException, SQLException
+    {
+        Class.forName("org.sqlite.JDBC");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
+        Statement statement = connection.createStatement();
+        
+        statement.executeUpdate(String.format("UPDATE personnages SET Name = %s, Race = %s, Lvl = %d, Description = %s WHERE Id = %d", p.name, p.race, p.level, p.description, p.id));
         
         statement.close();
         connection.close();
     }
     
     
-    
+    public void setChanges(int id, String name, String race, int level, String description)
+    {
+        setId(id);
+        setName(name);
+        setRace(race);
+        setLevel(level);
+        setDescription(description);
+    }
     
 
     public int getId() {
