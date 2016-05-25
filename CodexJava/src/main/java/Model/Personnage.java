@@ -26,12 +26,12 @@ public class Personnage {
     private Blob picture;
     private int level;
 
-    public Personnage(int id, String name, String race, String description, Blob picture, int level) {
+    public Personnage(int id, String name, String race, String description, int level) {
         this.id = id;
         this.name = name;
         this.race = race;
         this.description = description;
-        this.picture = picture;
+        //this.picture = picture;
         this.level = level;
     }
     
@@ -41,11 +41,11 @@ public class Personnage {
         ArrayList<Personnage> personnages = new ArrayList();
         
         Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\codexRDA.sqlite");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
         
         Statement statement = connection.createStatement();
         
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM personnnages ORDER BY name;");
+        ResultSet resultSet = statement.executeQuery("SELECT Id, Name, Race, Description, Picture, Lvl FROM personnages ORDER BY name;");
         
         while(resultSet.next())
         {
@@ -60,10 +60,10 @@ public class Personnage {
             name = resultSet.getString("Name");
             race = resultSet.getString("Race");
             description = resultSet.getString("Description");
-            picture = resultSet.getBlob("Picture");
-            level = resultSet.getInt("Level");
+            //picture = resultSet.getBlob("Picture");
+            level = resultSet.getInt("Lvl");
             
-            personnages.add(new Personnage(id, name, race, description, picture, level));
+            personnages.add(new Personnage(id, name, race, description, level));
         }
         
         resultSet.close();
@@ -78,7 +78,7 @@ public class Personnage {
     {
         
         Class.forName("org.sqlite.JDBC");
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\codexRDA.sqlite");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex");
         Statement statement = connection.createStatement();
         
         statement.executeUpdate("UPDATE personnages SET name = " + name +" WHERE Id = "+ id +";");
@@ -142,7 +142,7 @@ public class Personnage {
 
     @Override
     public String toString() {
-        return name + ", level=" + level;
+        return name + ", level = " + level;
     }
     
     

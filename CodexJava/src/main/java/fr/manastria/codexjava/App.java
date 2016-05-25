@@ -1,6 +1,7 @@
 package fr.manastria.codexjava;
 
 import Controller.Controller;
+import java.sql.SQLException;
 
 /**
  * Hello world!
@@ -8,7 +9,7 @@ import Controller.Controller;
  */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws ClassNotFoundException, SQLException
     {
         Controller control = new Controller();
     }
