@@ -5,13 +5,18 @@
  */
 package Model;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -23,22 +28,26 @@ public class Personnage {
     private String name;
     private String race;
     private String description;
-    private Blob picture;
+    private BufferedImage picture;
     private int level;
 
-    public Personnage(int id, String name, String race, String description, int level) {
+    public Personnage(int id, String name, String race, String description, int level, byte[] pic) throws IOException {
+        
+        ByteArrayInputStream imageInput = new ByteArrayInputStream(pic);
+        
         this.id = id;
         this.name = name;
         this.race = race;
         this.description = description;
-        //this.picture = picture;
+        this.picture = ImageIO.read(imageInput);
         this.level = level;
     }
     
     
-    public static ArrayList<Personnage> findAll() throws ClassNotFoundException, SQLException
+    public static ArrayList<Personnage> findAll() throws ClassNotFoundException, SQLException, IOException
     {
         ArrayList<Personnage> personnages = new ArrayList();
+   
         
         Class.forName("org.sqlite.JDBC");
         Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
@@ -53,17 +62,17 @@ public class Personnage {
             String name = "Not found";
             String race = null;
             String description = null;
-            Blob picture = null;
+            byte[] picture = null;
             int level = -1;
             
             id = resultSet.getInt("Id");
             name = resultSet.getString("Name");
             race = resultSet.getString("Race");
             description = resultSet.getString("Description");
-            //picture = resultSet.getBlob("Picture");
+            picture = resultSet.getBytes("Picture");
             level = resultSet.getInt("Lvl");
             
-            personnages.add(new Personnage(id, name, race, description, level));
+            personnages.add(new Personnage(id, name, race, description, level, picture));
         }
         
         resultSet.close();
@@ -93,9 +102,15 @@ public class Personnage {
     {
         Class.forName("org.sqlite.JDBC");
         Connection connection = DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
-        Statement statement = connection.createStatement();
+        PreparedStatement statement = connection.prepareStatement("UPDATE personnages SET Name = ?, Race = ?, Lvl = ?, Description = ? WHERE Id = ?");
         
-        statement.executeUpdate(String.format("UPDATE personnages SET Name = %s, Race = %s, Lvl = %d, Description = %s WHERE Id = %d", p.name, p.race, p.level, p.description, p.id));
+        statement.setString(1, p.name);
+        statement.setString(2, p.race);
+        statement.setInt(3, p.level);
+        statement.setString(4, p.description);
+        statement.setInt(5, p.id);
+        
+        statement.executeUpdate();
         
         statement.close();
         connection.close();
@@ -144,11 +159,11 @@ public class Personnage {
         this.description = decription;
     }
 
-    public Blob getPicture() {
+    public BufferedImage getPicture() {
         return picture;
     }
 
-    public void setPicture(Blob picture) {
+    public void setPicture(BufferedImage picture) {
         this.picture = picture;
     }
 

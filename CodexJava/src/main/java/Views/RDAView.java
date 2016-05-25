@@ -10,6 +10,7 @@ import Model.Personnage;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -49,7 +50,7 @@ public class RDAView extends javax.swing.JFrame {
         saveChange = new javax.swing.JButton();
         delete = new javax.swing.JButton();
         newEntry = new javax.swing.JButton();
-        labelImage = new javax.swing.JLabel();
+        labelImage = new PicturePanel();
         changeImage = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         textDescription = new javax.swing.JTextArea();
@@ -74,13 +75,13 @@ public class RDAView extends javax.swing.JFrame {
 
         textLevel.setText("jTextField2");
 
-        saveChange.setText("Sauvagrder les changement");
+        saveChange.setText("Sauvegarder les changement");
 
         delete.setText("Supprimer");
 
         newEntry.setText("Nouvelle Entrée");
 
-        labelImage.setText("jLabel6");
+        
 
         changeImage.setText("Changer l'image");
 
@@ -223,7 +224,7 @@ public class RDAView extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private JList<Personnage> listePersonnages;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel labelImage;
+    private PicturePanel labelImage;
     private javax.swing.JButton newEntry;
     private javax.swing.JButton saveChange;
     private javax.swing.JTextArea textDescription;
@@ -264,7 +265,7 @@ public class RDAView extends javax.swing.JFrame {
         return jScrollPane1;
     }
 
-    public JLabel getLabelImage() {
+    public PicturePanel getImagePanel() {
         return labelImage;
     }
 

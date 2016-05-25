@@ -7,9 +7,9 @@ package Controller;
 
 import Model.Personnage;
 import Views.RDAView;
-import Views.listListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -29,7 +29,7 @@ public class Controller {
     private Personnage selected;
     
     
-    public Controller() throws ClassNotFoundException, SQLException
+    public Controller() throws ClassNotFoundException, SQLException, IOException
     {
         fenetre = new RDAView();       
         ArrayList<Personnage> liste = Personnage.findAll();
@@ -90,6 +90,8 @@ public class Controller {
         fenetre.getTextRace().setText(selected.getRace());
         fenetre.getTextLevel().setText(Integer.toString(selected.getLevel()));
         fenetre.getTextDescription().setText(selected.getDescription());
+        
+        fenetre.getImagePanel().setImage(selected.getPicture());
         
     }
     
