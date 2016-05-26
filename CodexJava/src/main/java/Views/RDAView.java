@@ -6,7 +6,7 @@
 
 package Views;
 
-import Model.Personnage;
+import Model.Character;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -223,7 +223,7 @@ public class RDAView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private JList<Personnage> listePersonnages;
+    private JList<Character> listePersonnages;
     private javax.swing.JScrollPane jScrollPane2;
     private PicturePanel labelImage;
     private javax.swing.JButton newEntry;
@@ -296,7 +296,7 @@ public class RDAView extends javax.swing.JFrame {
         return textRace;
     }
 
-    public JList<Personnage> getListePersonnages() {
+    public JList<Character> getListePersonnages() {
         return listePersonnages;
     }
 

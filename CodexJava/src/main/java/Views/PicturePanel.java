@@ -7,6 +7,7 @@ package Views;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 /**
@@ -30,8 +31,10 @@ public class PicturePanel extends JPanel {
     
     @Override
     public void paint(Graphics g)
-    {
-        g.drawImage(picture, 0, 0, this.getSize().width, this.getSize().height, this);
+    {   
+        if (picture != null)
+            g.drawImage(picture, 0, 0, this.getSize().width, this.getSize().height, this);
+
     }
     
 }

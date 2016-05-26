@@ -5,7 +5,7 @@
  */
 package Controller;
 
-import Model.Personnage;
+import Model.Character;
 import Model.RDADatabase;
 import Views.RDAView;
 import Views.addPersoFrame;
@@ -24,17 +24,17 @@ import javax.swing.event.ListSelectionListener;
 
 public class Controller {
     
-    private ListSelectionListener displayedPerso;
+    private ListSelectionListener characterSelectionListener;
     private ActionListener changeButtonListener, addButtonListener,cancelAddListener, confirmAddListener;
     
     
-    private addPersoFrame addPerso;
-    RDAView mainFrame;
-    RDADatabase dataBase;
+    private addPersoFrame newCharacterFrame;
+    private RDAView mainFrame;
+    private RDADatabase dataBase;
     
-    ArrayList<Personnage> characters;
-    Personnage[] arrayCharacters;
-    private Personnage selected;
+    ArrayList<Character> characters;
+    Character[] arrayCharacters;
+    private Character selectedCharacter;
     
     
     public Controller() throws ClassNotFoundException, SQLException, IOException
@@ -42,9 +42,16 @@ public class Controller {
         mainFrame = new RDAView();
         dataBase = RDADatabase.getInstance();
 
+        initMainFrame();
+
+    }
+    
+    
+    public void initMainFrame() throws ClassNotFoundException, SQLException, IOException
+    {
         refreshList();
         
-        displayedPerso = new ListSelectionListener() {
+        characterSelectionListener = new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting())
                     persoSelection();
@@ -71,7 +78,7 @@ public class Controller {
         };
     
         
-        mainFrame.getListePersonnages().addListSelectionListener(displayedPerso);
+        mainFrame.getListePersonnages().addListSelectionListener(characterSelectionListener);
         mainFrame.getSaveChange().addActionListener(changeButtonListener);
         mainFrame.getNewEntry().addActionListener(addButtonListener);
         
@@ -85,29 +92,26 @@ public class Controller {
         
         mainFrame.setVisible(true);
         
-        
-
-
     }
     
     
     public void updatePerso() throws ClassNotFoundException, SQLException
     {
-        selected.setChanges(selected.getId(), mainFrame.getTextName().getText(), mainFrame.getTextRace().getText(), Integer.parseInt(mainFrame.getTextLevel().getText()), mainFrame.getTextDescription().getText());
-        dataBase.updatePerso(selected);
+        selectedCharacter.setChanges(selectedCharacter.getId(), mainFrame.getTextName().getText(), mainFrame.getTextRace().getText(), Integer.parseInt(mainFrame.getTextLevel().getText()), mainFrame.getTextDescription().getText());
+        dataBase.updatePerso(selectedCharacter);
     }
     
     
     public void persoSelection()
     {
-        selected = mainFrame.getListePersonnages().getSelectedValue();
+        selectedCharacter = mainFrame.getListePersonnages().getSelectedValue();
         
-        mainFrame.getTextName().setText(selected.getName());
-        mainFrame.getTextRace().setText(selected.getRace());
-        mainFrame.getTextLevel().setText(Integer.toString(selected.getLevel()));
-        mainFrame.getTextDescription().setText(selected.getDescription());
+        mainFrame.getTextName().setText(selectedCharacter.getName());
+        mainFrame.getTextRace().setText(selectedCharacter.getRace());
+        mainFrame.getTextLevel().setText(Integer.toString(selectedCharacter.getLevel()));
+        mainFrame.getTextDescription().setText(selectedCharacter.getDescription());
         
-        mainFrame.getImagePanel().setImage(selected.getPicture());
+        mainFrame.getImagePanel().setImage(selectedCharacter.getPicture());
         
     }
     
@@ -117,7 +121,7 @@ public class Controller {
     public void openAddForm()
     {
         System.out.println("Passe par openAddForm()");
-        addPerso = new addPersoFrame();
+        newCharacterFrame = new addPersoFrame();
         
         confirmAddListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -135,34 +139,36 @@ public class Controller {
         
         cancelAddListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                addPerso.setVisible(false);
+                newCharacterFrame.setVisible(false);
             }
         };
         
-        addPerso.getConfirmButton().addActionListener(confirmAddListener);
-        addPerso.getCancelButton().addActionListener(cancelAddListener);
+        newCharacterFrame.getConfirmButton().addActionListener(confirmAddListener);
+        newCharacterFrame.getCancelButton().addActionListener(cancelAddListener);
         
-        addPerso.setVisible(true);
+        newCharacterFrame.setVisible(true);
     }
     
     
     
     public void confirmAddCharacter() throws IOException, SQLException, ClassNotFoundException
     {
-        Personnage newCharacter = new Personnage(characters.size()+1, addPerso.getNameField().getText(), addPerso.getRaceField().getText(), addPerso.getDescriptionField().getText(), Integer.parseInt(addPerso.getLevelField().getText()),null);
+        Character newCharacter = new Character(characters.size()+1, newCharacterFrame.getNameField().getText(), newCharacterFrame.getRaceField().getText(), newCharacterFrame.getDescriptionField().getText(), Integer.parseInt(newCharacterFrame.getLevelField().getText()),null);
         characters.add(newCharacter);
         
         dataBase.addCharacter(newCharacter);
         refreshList();
-        addPerso.setVisible(false);
+        newCharacterFrame.setVisible(false);
     }
+    
+    
     
     
     
     public void refreshList() throws ClassNotFoundException, SQLException, IOException
     {
         characters = dataBase.findAll();
-        arrayCharacters = new Personnage[characters.size()];
+        arrayCharacters = new Character[characters.size()];
         arrayCharacters = characters.toArray(arrayCharacters);
         mainFrame.getListePersonnages().setListData(arrayCharacters);
     }

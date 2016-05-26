@@ -7,6 +7,7 @@ package Model;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -22,7 +23,7 @@ import javax.imageio.ImageIO;
  *
  * @author Oliver
  */
-public class Personnage {
+public class Character {
     
     private int id;
     private String name;
@@ -31,12 +32,15 @@ public class Personnage {
     private BufferedImage picture;
     private int level;
 
-    public Personnage(int id, String name, String race, String description, int level, byte[] pic) throws IOException {
+    public Character(int id, String name, String race, String description, int level, byte[] pic) throws IOException {
         
         ByteArrayInputStream imageInput = null;
+        File blankImageFile = null;
         
         if (pic != null)
             imageInput = new ByteArrayInputStream(pic);
+        else
+            blankImageFile = new File("C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\image\\Blank.png");
         
         this.id = id;
         this.name = name;
@@ -44,6 +48,8 @@ public class Personnage {
         this.description = description;
         if (imageInput != null)
             this.picture = ImageIO.read(imageInput);
+        else
+            this.picture = ImageIO.read(blankImageFile);
         this.level = level;
     }
     

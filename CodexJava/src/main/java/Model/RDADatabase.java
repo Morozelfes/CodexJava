@@ -44,9 +44,9 @@ public class RDADatabase{
     
     
     
-    public ArrayList<Personnage> findAll() throws ClassNotFoundException, SQLException, IOException
+    public ArrayList<Character> findAll() throws ClassNotFoundException, SQLException, IOException
     {
-        ArrayList<Personnage> personnages = new ArrayList();  
+        ArrayList<Character> personnages = new ArrayList();  
         connection = getConnection();       
         Statement statement = connection.createStatement();
         
@@ -68,7 +68,7 @@ public class RDADatabase{
             picture = resultSet.getBytes("Picture");
             level = resultSet.getInt("Lvl");
             
-            personnages.add(new Personnage(id, name, race, description, level, picture));
+            personnages.add(new Character(id, name, race, description, level, picture));
         }
         
         resultSet.close();
@@ -79,7 +79,7 @@ public class RDADatabase{
     }
     
     
-    public void updatePerso(Personnage p) throws ClassNotFoundException, SQLException
+    public void updatePerso(Character p) throws ClassNotFoundException, SQLException
     {
         connection = getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE personnages SET Name = ?, Race = ?, Lvl = ?, Description = ? WHERE Id = ?");
@@ -97,7 +97,7 @@ public class RDADatabase{
     }
     
     //A MODIFIER
-    public void addCharacter(Personnage p) throws SQLException, ClassNotFoundException
+    public void addCharacter(Character p) throws SQLException, ClassNotFoundException
     {
         connection = getConnection();
         
