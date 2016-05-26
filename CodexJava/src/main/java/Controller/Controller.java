@@ -6,6 +6,7 @@
 package Controller;
 
 import Model.Personnage;
+import Model.RDADatabase;
 import Views.RDAView;
 import Views.addPersoFrame;
 import java.awt.event.ActionEvent;
@@ -29,6 +30,7 @@ public class Controller {
     
     private addPersoFrame addPerso;
     RDAView mainFrame;
+    RDADatabase dataBase;
     
     ArrayList<Personnage> characters;
     Personnage[] arrayCharacters;
@@ -37,7 +39,8 @@ public class Controller {
     
     public Controller() throws ClassNotFoundException, SQLException, IOException
     {
-        mainFrame = new RDAView();       
+        mainFrame = new RDAView();
+        dataBase = RDADatabase.getInstance();
 
         refreshList();
         
@@ -81,6 +84,8 @@ public class Controller {
         
         
         mainFrame.setVisible(true);
+        
+        
 
 
     }
@@ -89,7 +94,7 @@ public class Controller {
     public void updatePerso() throws ClassNotFoundException, SQLException
     {
         selected.setChanges(selected.getId(), mainFrame.getTextName().getText(), mainFrame.getTextRace().getText(), Integer.parseInt(mainFrame.getTextLevel().getText()), mainFrame.getTextDescription().getText());
-        Personnage.updatePerso(selected);
+        dataBase.updatePerso(selected);
     }
     
     
@@ -107,8 +112,11 @@ public class Controller {
     }
     
     
+    
+    
     public void openAddForm()
     {
+        System.out.println("Passe par openAddForm()");
         addPerso = new addPersoFrame();
         
         confirmAddListener = new ActionListener() {
@@ -116,6 +124,10 @@ public class Controller {
                 try {
                     confirmAddCharacter();
                 } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -127,24 +139,29 @@ public class Controller {
             }
         };
         
-        addPerso.getConfirmButton().addActionListener(addButtonListener);
+        addPerso.getConfirmButton().addActionListener(confirmAddListener);
         addPerso.getCancelButton().addActionListener(cancelAddListener);
         
         addPerso.setVisible(true);
     }
     
     
-    public void confirmAddCharacter() throws IOException
+    
+    public void confirmAddCharacter() throws IOException, SQLException, ClassNotFoundException
     {
         Personnage newCharacter = new Personnage(characters.size()+1, addPerso.getNameField().getText(), addPerso.getRaceField().getText(), addPerso.getDescriptionField().getText(), Integer.parseInt(addPerso.getLevelField().getText()),null);
         characters.add(newCharacter);
         
-        Personnage.addCharacter(newCharacter);
+        dataBase.addCharacter(newCharacter);
+        refreshList();
+        addPerso.setVisible(false);
     }
+    
+    
     
     public void refreshList() throws ClassNotFoundException, SQLException, IOException
     {
-        characters = Personnage.findAll();
+        characters = dataBase.findAll();
         arrayCharacters = new Personnage[characters.size()];
         arrayCharacters = characters.toArray(arrayCharacters);
         mainFrame.getListePersonnages().setListData(arrayCharacters);
