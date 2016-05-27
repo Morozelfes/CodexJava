@@ -116,4 +116,17 @@ public class RDADatabase{
     }
     
     
+    public void deleteCharacter(Character character) throws SQLException
+    {
+        connection = getConnection();
+        
+        PreparedStatement statement = connection.prepareStatement("DELETE FROM personnages WHERE Id = ?;");
+        statement.setInt(1, character.getId());
+        statement.executeUpdate();
+                
+        statement.close();
+        connection.close();
+    }
+    
+    
 }
