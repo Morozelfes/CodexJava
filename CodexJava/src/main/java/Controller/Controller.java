@@ -11,13 +11,16 @@ import Views.RDAView;
 import Views.addPersoFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -28,11 +31,14 @@ import javax.swing.event.ListSelectionListener;
 public class Controller {
     
     private ListSelectionListener characterSelectionListener;
-    private ActionListener changeButtonListener, addButtonListener,cancelAddListener, confirmAddListener, deleteButtonListener;
+    private ActionListener changeButtonListener, addButtonListener,cancelAddListener, confirmAddListener, deleteButtonListener, addPictureListener;
     
     
     private addPersoFrame newCharacterFrame;
     private RDAView mainFrame;
+    private JFileChooser pictureChooser;
+    
+    
     private RDADatabase dataBase;
     
     ArrayList<Character> characters;
@@ -95,12 +101,28 @@ public class Controller {
                 }
             }
         };
+        
+        
+        addPictureListener = new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    addPicture(selectedCharacter);
+                } catch (IOException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
     
         
         mainFrame.getListePersonnages().addListSelectionListener(characterSelectionListener);
         mainFrame.getSaveChange().addActionListener(changeButtonListener);
         mainFrame.getNewEntry().addActionListener(addButtonListener);
         mainFrame.getDelete().addActionListener(deleteButtonListener);
+        mainFrame.getChangeImage().addActionListener(addPictureListener);
         
         
         mainFrame.getListePersonnages().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -231,22 +253,19 @@ public class Controller {
     }
     
     
-    public void removeFromModel(DefaultListModel<Character> model, Character c)
+    public void addPicture(Character character) throws IOException, ClassNotFoundException, SQLException
     {
-        DefaultListModel<Character> temp;
+        File chosenFile;
+        pictureChooser = new JFileChooser();
         
-        temp = model;
+        int choice = pictureChooser.showOpenDialog(mainFrame);
         
-        for (int i=0, j=0; i<=model.getSize(); i++)
+        if(choice == JFileChooser.APPROVE_OPTION)
         {
-            if(model.get(i) != c)
-            {
-                temp.add(j, c);
-                j++;
-            }
+            chosenFile = pictureChooser.getSelectedFile();
+            character.setPicture(ImageIO.read(chosenFile));
+            dataBase.updatePerso(character);
         }
-        
-        model = temp;
     }
 
     
