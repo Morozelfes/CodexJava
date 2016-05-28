@@ -152,6 +152,12 @@ public class Controller {
         String name, race, unknown = "Inconnu";
         int level;
         
+        if (selectedCharacter == null)
+        {
+            JOptionPane.showMessageDialog(mainFrame, "Veuillez selectionner un personnage a modifier.", "Aucun personnage selectionne", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         name = mainFrame.getTextName().getText();
         if ("".equals(name))
             name = unknown;
@@ -168,6 +174,7 @@ public class Controller {
         
         selectedCharacter.setChanges(name, race, level, mainFrame.getTextDescription().getText());
         dataBase.updatePerso(selectedCharacter);
+
     }
     
     
@@ -282,19 +289,19 @@ public class Controller {
     
     public void deleteCharacter(Character character) throws SQLException, ClassNotFoundException, IOException
     {
-        System.out.println(character);
-        
-        characterModel.removeElement(character);
-        System.out.println("passe 1");
-        
-        characters.remove(character);
-        
-        System.out.println("passe2");
-        dataBase.deleteCharacter(character);               
-        
-        mainFrame.getListePersonnages().setSelectedIndex(0);
-        selectedCharacter = mainFrame.getListePersonnages().getSelectedValue();
-        System.out.println("selectinne apres suppression: " + selectedCharacter);
+        try
+        {
+            characterModel.removeElement(character);
+            characters.remove(character);        
+            dataBase.deleteCharacter(character);               
+
+            mainFrame.getListePersonnages().setSelectedIndex(0);
+            selectedCharacter = mainFrame.getListePersonnages().getSelectedValue();
+        }
+        catch(NullPointerException e)
+        {
+            JOptionPane.showMessageDialog(mainFrame, "Veuillez selectionner un personnage a supprimer.", "Aucun personnage selectionne", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     
@@ -303,6 +310,12 @@ public class Controller {
         String type;
         File chosenFile;
         pictureChooser = new JFileChooser();
+        
+        if (character == null)
+        {
+            JOptionPane.showMessageDialog(mainFrame, "Veuillez selectionner un personnage a modifier.", "Aucun personnage selectionne", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
         int choice = pictureChooser.showOpenDialog(mainFrame);
         
@@ -317,9 +330,7 @@ public class Controller {
             character.setPicture(ImageIO.read(chosenFile));
         else
             JOptionPane.showMessageDialog(mainFrame, "Ce type de fichier n'est pas pris en compte pour l'image. Merci de choisir une image type .jpg ou .png", "Erreur: type d'image", JOptionPane.ERROR_MESSAGE);
-        
-        
-        
+      
     }
     
     
