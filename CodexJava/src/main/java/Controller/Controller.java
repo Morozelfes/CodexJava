@@ -11,7 +11,6 @@ import Views.RDAView;
 import Views.addPersoFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLConnection;
@@ -19,7 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -48,7 +46,6 @@ public class Controller {
     DefaultListModel<Character> characterModel;
     private Character selectedCharacter;
     
-    //private DefaultListModel listModel;
     
     public Controller() throws ClassNotFoundException, SQLException, IOException
     {
@@ -92,7 +89,7 @@ public class Controller {
         updateCharacterListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    updatePerso();
+                    updateCharacter(selectedCharacter);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
@@ -147,7 +144,7 @@ public class Controller {
     }
     
     
-    public void updatePerso() throws ClassNotFoundException, SQLException
+    public void updateCharacter(Character character) throws ClassNotFoundException, SQLException
     {
         String name, race, unknown = "Inconnu";
         int level;
@@ -172,8 +169,8 @@ public class Controller {
             level = 0;
         
         
-        selectedCharacter.setChanges(name, race, level, mainFrame.getTextDescription().getText());
-        dataBase.updatePerso(selectedCharacter);
+        character.setChanges(name, race, level, mainFrame.getTextDescription().getText());
+        dataBase.updateCharacter(character);
 
     }
     

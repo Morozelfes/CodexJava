@@ -79,7 +79,7 @@ public class RDADatabase{
     }
     
     
-    public void updatePerso(Character p) throws ClassNotFoundException, SQLException
+    public void updateCharacter(Character p) throws ClassNotFoundException, SQLException
     {
         connection = getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE personnages SET Name = ?, Race = ?, Lvl = ?, Description = ? WHERE Id = ?");
