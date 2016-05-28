@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -311,11 +312,17 @@ public class Controller {
         chosenFile = pictureChooser.getSelectedFile();       
         
         type = URLConnection.guessContentTypeFromName(chosenFile.getAbsolutePath());
-        
-        if (type.equals("image"))
+                
+        if ((type.equals("image/png")) || (type.equals("image/jpg")) && (type != null))
             character.setPicture(ImageIO.read(chosenFile));
+        else
+            JOptionPane.showMessageDialog(mainFrame, "Ce type de fichier n'est pas pris en compte pour l'image. Merci de choisir une image type .jpg ou .png", "Erreur: type d'image", JOptionPane.ERROR_MESSAGE);
+        
+        
         
     }
+    
+    
 
     
 }
