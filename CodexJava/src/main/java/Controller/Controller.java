@@ -11,27 +11,29 @@ import Views.RDAView;
 import Views.addPersoFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 
 public class Controller {
+    private SecurityController security;
     
     private ListSelectionListener characterSelectionListener;
-    private ActionListener changeButtonListener, addButtonListener,cancelAddListener, confirmAddListener, deleteButtonListener, addPictureListener;
+    private ActionListener updateCharacterListener, addCharacterListener,cancelAddListener, confirmAddListener, deleteCharacterListener, addPictureListener;
     
     
     private addPersoFrame newCharacterFrame;
@@ -61,6 +63,23 @@ public class Controller {
     {
         refreshList();
         
+        initListeners();
+  
+        mainFrame.getListePersonnages().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        mainFrame.getListePersonnages().setLayoutOrientation(JList.VERTICAL);
+        
+        mainFrame.getListePersonnages().setVisibleRowCount(10);
+        mainFrame.getListePersonnages().setVisible(true);
+        
+        
+        mainFrame.setVisible(true);
+        
+    }
+    
+    
+    
+    public void initListeners()
+    {
         characterSelectionListener = new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting())
@@ -69,7 +88,7 @@ public class Controller {
         };
         
         
-        changeButtonListener = new ActionListener() {
+        updateCharacterListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 try {
                     updatePerso();
@@ -81,14 +100,14 @@ public class Controller {
             }
         };
         
-        addButtonListener = new ActionListener() {
+        addCharacterListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 openAddForm();
             }
         };
         
         
-        deleteButtonListener = new ActionListener() {
+        deleteCharacterListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 try {
                     deleteCharacter(selectedCharacter);
@@ -119,27 +138,34 @@ public class Controller {
     
         
         mainFrame.getListePersonnages().addListSelectionListener(characterSelectionListener);
-        mainFrame.getSaveChange().addActionListener(changeButtonListener);
-        mainFrame.getNewEntry().addActionListener(addButtonListener);
-        mainFrame.getDelete().addActionListener(deleteButtonListener);
+        mainFrame.getSaveChange().addActionListener(updateCharacterListener);
+        mainFrame.getNewEntry().addActionListener(addCharacterListener);
+        mainFrame.getDelete().addActionListener(deleteCharacterListener);
         mainFrame.getChangeImage().addActionListener(addPictureListener);
-        
-        
-        mainFrame.getListePersonnages().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        mainFrame.getListePersonnages().setLayoutOrientation(JList.VERTICAL);
-        
-        mainFrame.getListePersonnages().setVisibleRowCount(10);
-        mainFrame.getListePersonnages().setVisible(true);
-        
-        
-        mainFrame.setVisible(true);
         
     }
     
     
     public void updatePerso() throws ClassNotFoundException, SQLException
     {
-        selectedCharacter.setChanges(selectedCharacter.getId(), mainFrame.getTextName().getText(), mainFrame.getTextRace().getText(), Integer.parseInt(mainFrame.getTextLevel().getText()), mainFrame.getTextDescription().getText());
+        String name, race, unknown = "Inconnu";
+        int level;
+        
+        name = mainFrame.getTextName().getText();
+        if ("".equals(name))
+            name = unknown;
+        
+        race = mainFrame.getTextRace().getText();
+        if ("".equals(race))
+            race = unknown;
+        
+        if (!"".equals(mainFrame.getTextLevel().getText()))
+            level = Integer.parseInt(mainFrame.getTextLevel().getText());
+        else
+            level = 0;
+        
+        
+        selectedCharacter.setChanges(name, race, level, mainFrame.getTextDescription().getText());
         dataBase.updatePerso(selectedCharacter);
     }
     
@@ -201,15 +227,33 @@ public class Controller {
     
     public void confirmAddCharacter() throws IOException, SQLException, ClassNotFoundException
     {
-        Character newCharacter = new Character(characters.size()+1, newCharacterFrame.getNameField().getText(), newCharacterFrame.getRaceField().getText(), newCharacterFrame.getDescriptionField().getText(), Integer.parseInt(newCharacterFrame.getLevelField().getText()),null);
+        String unknown = "Inconnu", name, race;
+        int level;
+        
+        name = newCharacterFrame.getNameField().getText();
+        if ("".equals(name))
+            name = unknown;
+        
+        race = newCharacterFrame.getRaceField().getText();
+        if("".equals(race))
+            race = unknown;
+        
+        
+        if (!"".equals(newCharacterFrame.getLevelField().getText()))
+            level = Integer.parseInt(newCharacterFrame.getLevelField().getText());
+        else
+            level = 0;
+        
+        
+        Character newCharacter = new Character(characters.size()+1, name, race, newCharacterFrame.getDescriptionField().getText(), level, null);
         characters.add(newCharacter);
         
         dataBase.addCharacter(newCharacter);
         characterModel.add(characters.size()-1, newCharacter);
         
         newCharacterFrame.setVisible(false);
-    }
-    
+    }    
+
     
     
     
@@ -255,17 +299,22 @@ public class Controller {
     
     public void addPicture(Character character) throws IOException, ClassNotFoundException, SQLException
     {
+        String type;
         File chosenFile;
         pictureChooser = new JFileChooser();
         
         int choice = pictureChooser.showOpenDialog(mainFrame);
         
-        if(choice == JFileChooser.APPROVE_OPTION)
-        {
-            chosenFile = pictureChooser.getSelectedFile();
+        if(choice != JFileChooser.APPROVE_OPTION)
+            return;
+        
+        chosenFile = pictureChooser.getSelectedFile();       
+        
+        type = URLConnection.guessContentTypeFromName(chosenFile.getAbsolutePath());
+        
+        if (type.equals("image"))
             character.setPicture(ImageIO.read(chosenFile));
-            dataBase.updatePerso(character);
-        }
+        
     }
 
     

@@ -37,27 +37,29 @@ public class Character {
         ByteArrayInputStream imageInput = null;
         File blankImageFile = null;
         
-        if (pic != null)
-            imageInput = new ByteArrayInputStream(pic);
-        else
-            blankImageFile = new File("C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\image\\Blank.png");
         
         this.id = id;
         this.name = name;
         this.race = race;
-        this.description = description;
-        if (imageInput != null)
-            this.picture = ImageIO.read(imageInput);
-        else
-            this.picture = ImageIO.read(blankImageFile);
+        this.description = description; 
         this.level = level;
+              
+        if (pic != null)
+        {
+            imageInput = new ByteArrayInputStream(pic);
+            this.picture = ImageIO.read(imageInput);
+        }
+        else
+        {
+            blankImageFile = new File("C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\image\\Blank.png");
+            this.picture = ImageIO.read(blankImageFile);
+        }
     }
     
 
     
-    public void setChanges(int id, String name, String race, int level, String description)
+    public void setChanges(String name, String race, int level, String description)
     {
-        setId(id);
         setName(name);
         setRace(race);
         setLevel(level);
