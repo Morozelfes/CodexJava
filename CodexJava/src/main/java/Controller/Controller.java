@@ -8,7 +8,7 @@ package Controller;
 import Model.Character;
 import Model.RDADatabase;
 import Views.RDAView;
-import Views.addPersoFrame;
+import Views.AddCharacterFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -35,7 +35,7 @@ public class Controller {
     private ActionListener updateCharacterListener, addCharacterListener,cancelAddListener, confirmAddListener, deleteCharacterListener, addPictureListener;
     
     
-    private addPersoFrame newCharacterFrame;
+    private AddCharacterFrame newCharacterFrame;
     private RDAView mainFrame;
     private JFileChooser pictureChooser;
     
@@ -81,7 +81,7 @@ public class Controller {
         characterSelectionListener = new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent lse) {
                 if (!lse.getValueIsAdjusting())
-                    persoSelection();
+                    characterSelection();
             }
         };
         
@@ -93,6 +93,8 @@ public class Controller {
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
+                    Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
                     Logger.getLogger(Controller.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -144,7 +146,7 @@ public class Controller {
     }
     
     
-    public void updateCharacter(Character character) throws ClassNotFoundException, SQLException
+    public void updateCharacter(Character character) throws ClassNotFoundException, SQLException, IOException
     {
         String name, race, unknown = "Inconnu";
         int level;
@@ -175,7 +177,7 @@ public class Controller {
     }
     
     
-    public void persoSelection()
+    public void characterSelection()
     {        
         try
         {
@@ -200,7 +202,7 @@ public class Controller {
     
     public void openAddForm()
     {
-        newCharacterFrame = new addPersoFrame();
+        newCharacterFrame = new AddCharacterFrame();
         
         confirmAddListener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -327,6 +329,8 @@ public class Controller {
             character.setPicture(ImageIO.read(chosenFile));
         else
             JOptionPane.showMessageDialog(mainFrame, "Ce type de fichier n'est pas pris en compte pour l'image. Merci de choisir une image type .jpg ou .png", "Erreur: type d'image", JOptionPane.ERROR_MESSAGE);
+        
+        dataBase.updateCharacter(character);
       
     }
     

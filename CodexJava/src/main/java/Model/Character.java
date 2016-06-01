@@ -43,7 +43,7 @@ public class Character {
         }
         else
         {
-            blankImageFile = new File("C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\image\\Blank.png");
+            blankImageFile = new File("..\\image\\Blank.png");
             this.picture = ImageIO.read(blankImageFile);
         }
     }

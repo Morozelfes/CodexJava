@@ -5,6 +5,7 @@
  */
 package Model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+//import java.util.Base64;
 
 /**
  *
@@ -38,7 +41,7 @@ public class RDADatabase{
     
     
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:C:\\Users\\Oliver\\Desktop\\ProjetJavaDelahaye\\CodexJava\\RDACodex.sqlite");
+        return DriverManager.getConnection("jdbc:sqlite:..\\RDACodex.sqlite");
     }
     
     
@@ -46,7 +49,7 @@ public class RDADatabase{
     
     public ArrayList<Character> findAll() throws ClassNotFoundException, SQLException, IOException
     {
-        ArrayList<Character> personnages = new ArrayList();  
+        ArrayList<Character> characters = new ArrayList();  
         connection = getConnection();       
         Statement statement = connection.createStatement();
         
@@ -68,27 +71,34 @@ public class RDADatabase{
             picture = resultSet.getBytes("Picture");
             level = resultSet.getInt("Lvl");
             
-            personnages.add(new Character(id, name, race, description, level, picture));
+            characters.add(new Character(id, name, race, description, level, picture));
         }
         
         resultSet.close();
         statement.close();
         connection.close();
         
-        return personnages;
+        return characters;
     }
     
     
-    public void updateCharacter(Character p) throws ClassNotFoundException, SQLException
-    {
-        connection = getConnection();
-        PreparedStatement statement = connection.prepareStatement("UPDATE personnages SET Name = ?, Race = ?, Lvl = ?, Description = ? WHERE Id = ?");
+    public void updateCharacter(Character character) throws ClassNotFoundException, SQLException, IOException
+    {   
+        ByteArrayOutputStream picStream = new ByteArrayOutputStream();
+        ImageIO.write(character.getPicture(), "jpg", picStream);
+        byte[] pictureByte = picStream.toByteArray();
         
-        statement.setString(1, p.getName());
-        statement.setString(2, p.getRace());
-        statement.setInt(3, p.getLevel());
-        statement.setString(4, p.getDescription());
-        statement.setInt(5, p.getId());
+        
+        
+        connection = getConnection();
+        PreparedStatement statement = connection.prepareStatement("UPDATE personnages SET Name = ?, Race = ?, Lvl = ?, Description = ?, Picture = ? WHERE Id = ?");
+        
+        statement.setString(1, character.getName());
+        statement.setString(2, character.getRace());
+        statement.setInt(3, character.getLevel());
+        statement.setString(4, character.getDescription());
+        statement.setInt(5, character.getId());
+        statement.setBytes(6, pictureByte);
         
         statement.executeUpdate();
         
@@ -96,17 +106,17 @@ public class RDADatabase{
         connection.close();
     }
     
-    //A MODIFIER
-    public void addCharacter(Character p) throws SQLException, ClassNotFoundException
+    
+    public void addCharacter(Character character) throws SQLException, ClassNotFoundException
     {
         connection = getConnection();
         
         PreparedStatement statement = connection.prepareStatement("INSERT INTO personnages (Id, Name, Race, Description, Lvl) VALUES (?, ?, ?, ?, ?);");
-        statement.setInt(1, p.getId());
-        statement.setString(2, p.getName());
-        statement.setString(3, p.getRace());
-        statement.setString(4, p.getDescription());
-        statement.setInt(5, p.getLevel());
+        statement.setInt(1, character.getId());
+        statement.setString(2, character.getName());
+        statement.setString(3, character.getRace());
+        statement.setString(4, character.getDescription());
+        statement.setInt(5, character.getLevel());
         
         statement.executeUpdate();
         
