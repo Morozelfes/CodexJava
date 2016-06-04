@@ -12,18 +12,17 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
- *
+ * Form add character frame class.
  * @author Oliver
  */
 public class AddCharacterFrame extends javax.swing.JFrame {
 
     /**
-     * Creates new form addPersoFrame
+     * Creates new form addCharacterFrame
      */
     public AddCharacterFrame() {
         initComponents();
-        
-        
+
     }
 
     /**
@@ -178,52 +177,92 @@ public class AddCharacterFrame extends javax.swing.JFrame {
     private javax.swing.JTextField raceField;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     *
+     * @return
+     */
     public JTextArea getDescriptionField() {
         return descriptionField;
     }
 
+    /**
+     *
+     * @return
+     */
     public JButton getConfirmButton() {
         return confirmButton;
     }
 
+    /**
+     *
+     * @return
+     */
     public JButton getCancelButton() {
         return cancelButton;
     }
 
+    /**
+     *
+     * @return
+     */
     public JLabel getjLabel1() {
         return jLabel1;
     }
 
+    /**
+     *
+     * @return
+     */
     public JLabel getjLabel2() {
         return jLabel2;
     }
 
+    /**
+     *
+     * @return
+     */
     public JLabel getjLabel3() {
         return jLabel3;
     }
 
+    /**
+     *
+     * @return
+     */
     public JLabel getjLabel4() {
         return jLabel4;
     }
 
+    /**
+     *
+     * @return
+     */
     public JScrollPane getjScrollPane1() {
         return jScrollPane1;
     }
 
+    /**
+     *
+     * @return
+     */
     public JTextField getLevelField() {
         return levelField;
     }
 
+    /**
+     *
+     * @return
+     */
     public JTextField getNameField() {
         return nameField;
     }
 
+    /**
+     *
+     * @return
+     */
     public JTextField getRaceField() {
         return raceField;
     }
-
-
-
-
 
 }
